@@ -25,12 +25,21 @@ const getdata = async (date, x) => {
   // change index to run 1-9
   arrayLottoFinal[7][0] = "8";
   arrayLottoFinal[8][0] = "9";
+  // change index to run 1-9
+  arrayLottoFinal[7][0] = "8";
+  arrayLottoFinal[8][0] = "9";
 
   // convert x to number to check num lotto
   x = +x
   // console.log(`date is ${date}`)
   // console.log(`x is ${x}`)
 
+  // check error input lotto
+  if (Number.isNaN(x)) {
+    throw new Error("Your input is not a number!");
+  } else {
+    x = x.toString();
+  }
   // check error input lotto
   if (Number.isNaN(x)) {
     throw new Error("Your input is not a number!");
@@ -47,7 +56,19 @@ const getdata = async (date, x) => {
         chalk.bgGreen.red(`จำนวนเงิน ${bath} บาท`)
     );
   };
+  // use chalk to log
+  const logToConsole = (th, bath, x) => {
+    console.log(
+      chalk.red.italic(`คุณถูกหวย `) +
+        chalk.blue(chalk.bgRed.bold(`${th}`)) +
+        chalk.blueBright.bold(` เลข ${x} `) +
+        chalk.bgGreen.red(`จำนวนเงิน ${bath} บาท`)
+    );
+  };
 
+  const logNotPrize = (x) => {
+    console.log(chalk.bgRed.bold(`เลข ${x} ของคุณไม่ถูกรางวัล!`))
+  }
   const logNotPrize = (x) => {
     console.log(chalk.bgRed.bold(`เลข ${x} ของคุณไม่ถูกรางวัล!`))
   }
