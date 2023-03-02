@@ -2,9 +2,10 @@
 
 const axios = require("axios").default;
 const { program } = require("commander");
+const chalk = require("chalk");
 require("dotenv").config();
 
-let x = "644921";
+let x = "590516"; // create number manual 
 const { urlAPI } = process.env;
 const urlAPILotto = `${urlAPI}`;
 
@@ -20,7 +21,7 @@ const getdata = async (date) => {
   console.log(date);
   await axios.get(`${urlAPILotto}${date}`).then((response) => {
     const numLottoData = Object.entries(response.data.data.prizes);
-    const arrayLottoFinal = []; // array ซ้อนที่มี [รางวัลที่, [จำนวนเลข, เงินรางวัล], [เลขรางวัลต่างๆ]]
+    const arrayLottoFinal = [];
     numLottoData.forEach((item) => {
       let numLottoTemp = Object.entries(item);
       let arrayTemp = [];
@@ -46,49 +47,62 @@ const getdata = async (date) => {
       x = x.toString();
     }
 
+    // use chalk to log
+    const logToConsole = (th, bath, x) => {
+      console.log(
+        chalk.red.italic(`คุณถูกหวย `) +
+          chalk.blue(chalk.bgRed.bold(`${th}`)) +
+          chalk.blueBright.bold(` เลข ${x} `) +
+          chalk.bgGreen.red(`จำนวนเงิน ${bath} บาท`)
+      );
+    };
+
+    const logNotPrize = (x) => {
+      console.log(chalk.bgRed.bold(`เลข ${x} ของคุณไม่ถูกรางวัล!`))
+    }
+
     // check num lotto to get prize!
     try {
       switch (x.length) {
         case 2:
           for (let i = 0; i < arrayLottoFinal[6][2].length; i++) {
             if (x === arrayLottoFinal[6][2][i]) {
-              console.log("ถูกรางวัลเลขท้าย 2 ตัวจ้า");
+              logToConsole("รางวัลเลขท้าย 2 ตัว", 2000, x);
             }
           }
-          console.log("ถูกแดก");
+          logNotPrize(x)
           break;
         case 3:
           for (let i = 0; i < arrayLottoFinal[5][1][0]; i++) {
             if (x === arrayLottoFinal[5][2][i]) {
-              return console.log(`คุณถูกหวยเลขท้าย 3 ตัว`);
+              return logToConsole("รางวัลเลขหน้า 3 ตัว", 4000, x);
             } else if (x === arrayLottoFinal[7][2][i]) {
-              return console.log(`คุณถูกหวยเลขหน้า 3 ตัว`);
+              return logToConsole("รางวัลเลขท้าย 3 ตัว", 4000, x);
             }
           }
-          console.log(`ถูกแดก`);
+          logNotPrize(x)
           break;
         case 6:
           for (let i = 0; i < arrayLottoFinal[4][1][0]; i++) {
             if (x === arrayLottoFinal[0][2][0]) {
-              return console.log("ถูกรางวัลที่ 1 จ้าา เศรษฐีหน้าใหม่!");
+              return logToConsole("รางวัลที่ 1", 6000000, x);
             } else if (x === arrayLottoFinal[1][2][i]) {
-              return console.log("คุณถูกรางวัลที่ 2");
+              return logToConsole("รางวัลที่ 2", 200000, x);
             } else if (x === arrayLottoFinal[2][2][i]) {
-              return console.log("คุณถูกรางวัลที่ 3");
+              return logToConsole("รางวัลที่ 3", 80000, x);
             } else if (x === arrayLottoFinal[3][2][i]) {
-              return console.log("คุณถูกรางวัลที่ 4");
+              return logToConsole("รางวัลที่ 4", 40000, x);
             } else if (x === arrayLottoFinal[4][2][i]) {
-              return console.log("คุณถูกรางวัลที่ 5");
+              return logToConsole("รางวัลที่ 5", 20000, x);
             } else if (x === arrayLottoFinal[8][2][i]) {
-              return console.log("คุณถูกรางวัลข้างเคียงรางวัลที่ 1");
+              return logToConsole("รางวัลข้างเคียงรางวัลที่ 1", 100000, x);
             }
           }
-          console.log(`ถูกแดก`)
-          break
-          default:
-            throw new Error ('Is not a lotto! | pls check a length.')
+          logNotPrize(x)
+          break;
+        default:
+          throw new Error("Is not a lotto! | pls check a length.");
       }
-
     } catch (error) {
       console.log(error);
     }
