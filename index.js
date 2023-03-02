@@ -96,15 +96,3 @@ const getdata = async (date) => {
 };
 
 getdata("2023-02-16");
-
-// const urlAPILotto = "https://www.thairath.co.th/api-lottery?history=1&date=";
-
-// const getdata = (date) => {
-//   console.log(date);
-//   axios.get(`${urlAPILotto}${date}`).then((response) => {
-//     const numLottoData = response.data.data.prizes;
-//     console.log(numLottoData);
-//   });
-// };
-
-// getdata("2023-02-01");
