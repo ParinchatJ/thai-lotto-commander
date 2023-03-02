@@ -1,13 +1,22 @@
-// เลือกวันที่ด้วยที่จ้องการเช็ต ทำเช็คหวย และดูผลทั้งหมด
-
-// เหลือ : แยกไฟล์ / สร้าง command / แสดงผลว่าถูกรางวัลที่ และได้เงินเท่าไหร่ (ใช้ chalk)
+//! แยกไฟล์ / ทำ commander ไม่ได้
 
 const axios = require("axios").default;
+const { program } = require("commander");
+require("dotenv").config();
 
-const x = "90900909090";
-const urlAPILotto = "https://www.thairath.co.th/api-lottery?history=1&date=";
+let x = "644921";
+const { urlAPI } = process.env;
+const urlAPILotto = `${urlAPI}`;
 
-const  getdata = async (date) => {
+// program
+//   .name("check-lotto-CLI")
+//   .description("You can check thai lottery and become a millionaire!")
+//   .version("1.0.0")
+//   .requiredOption("-d, --date <date>", "Date to check lottery")
+//   .requiredOption("-l, --lotto <lottery>", "Number lottery to check!")
+//   .action()
+
+const getdata = async (date) => {
   console.log(date);
   await axios.get(`${urlAPILotto}${date}`).then((response) => {
     const numLottoData = Object.entries(response.data.data.prizes);
@@ -27,56 +36,62 @@ const  getdata = async (date) => {
     arrayLottoFinal[7][0] = "8";
     arrayLottoFinal[8][0] = "9";
 
+    // convert x to number to check num lotto
+    x = +x;
+
+    // check error input lotto
+    if (Number.isNaN(x)) {
+      throw new Error("Your input is not a number!");
+    } else {
+      x = x.toString();
+    }
+
+    // check num lotto to get prize!
     try {
-        for (let i = 0; i <= 100; i++) {
-        switch (x.length) {
-          case 2:
+      switch (x.length) {
+        case 2:
+          for (let i = 0; i < arrayLottoFinal[6][2].length; i++) {
             if (x === arrayLottoFinal[6][2][i]) {
-              return console.log("ถูกรางวัลเลขท้าย 2 ตัวจ้า");
-            } else if (x !== arrayLottoFinal[6][2][i]) {
-              return console.log("ถูกแดก");
-            } else {
-              throw new Error('Is not a lotto! | pls check a length.');
+              console.log("ถูกรางวัลเลขท้าย 2 ตัวจ้า");
             }
-
-          case 3:
-            if (x === arrayLottoFinal[7][2][i]) {
-              return console.log("ถูกรางวัลเลขท้าย 3 ตัวจ้า");
-            } else if (x === arrayLottoFinal[5][2][i]) {
-              return console.log("ถูกรางวัลเลขหน้า 3 ตัวจ้า");
-            } else if (
-              x !== arrayLottoFinal[5][2][i] ||
-              x !== arrayLottoFinal[7][2][i]
-            ) {
-              return console.log("ถูกแดก");
-            } else {
-              throw new Error('Is not a lotto! | pls check a length.');
+          }
+          console.log("ถูกแดก");
+          break;
+        case 3:
+          for (let i = 0; i < arrayLottoFinal[5][1][0]; i++) {
+            if (x === arrayLottoFinal[5][2][i]) {
+              return console.log(`คุณถูกหวยเลขท้าย 3 ตัว`);
+            } else if (x === arrayLottoFinal[7][2][i]) {
+              return console.log(`คุณถูกหวยเลขหน้า 3 ตัว`);
             }
+          }
+          console.log(`ถูกแดก`);
+          break;
         case 6:
+          for (let i = 0; i < arrayLottoFinal[4][1][0]; i++) {
             if (x === arrayLottoFinal[0][2][0]) {
-                return console.log('ถูกรางวัลที่ 1 จ้าา เศรษฐีหน้าใหม่!')
+              return console.log("ถูกรางวัลที่ 1 จ้าา เศรษฐีหน้าใหม่!");
             } else if (x === arrayLottoFinal[1][2][i]) {
-                return console.log('คุณถูกรางวัลที่ 2')
+              return console.log("คุณถูกรางวัลที่ 2");
             } else if (x === arrayLottoFinal[2][2][i]) {
-                return console.log('คุณถูกรางวัลที่ 3')
+              return console.log("คุณถูกรางวัลที่ 3");
             } else if (x === arrayLottoFinal[3][2][i]) {
-                return console.log('คุณถูกรางวัลที่ 4')
+              return console.log("คุณถูกรางวัลที่ 4");
             } else if (x === arrayLottoFinal[4][2][i]) {
-                return console.log('คุณถูกรางวัลที่ 5')
+              return console.log("คุณถูกรางวัลที่ 5");
             } else if (x === arrayLottoFinal[8][2][i]) {
-                return console.log('คุณถูกรางวัลข้างเคียงรางวัลที่ 1')
-            } else {
-                throw new Error('Is not a lotto! | pls check a length.');
+              return console.log("คุณถูกรางวัลข้างเคียงรางวัลที่ 1");
             }
-        default:
-            throw new Error ('Is not a number!| pls check a length or type of input.')
-
-        }
+          }
+          console.log(`ถูกแดก`)
+          break
+          default:
+            throw new Error ('Is not a lotto! | pls check a length.')
       }
+
     } catch (error) {
       console.log(error);
     }
-    // console.log(arrayLottoFinal)
   });
 };
 
